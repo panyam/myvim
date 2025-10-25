@@ -242,6 +242,22 @@ In Vim:
 <F3>
 ```
 
+## Viewing Error Messages
+
+If you see an error message flash by too quickly:
+
+```vim
+:messages         " View all recent messages and errors
+,m                " Quick shortcut (comma + m)
+```
+
+You can then:
+- Scroll through the message history
+- Copy/paste error messages
+- Search for solutions
+
+The message history is preserved with up to 1000 entries.
+
 ## Troubleshooting
 
 ### Vimspector Not Working

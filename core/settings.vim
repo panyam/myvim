@@ -13,6 +13,15 @@ set hlsearch             " Highlight search results
 set signcolumn=yes       " Always show sign column (for breakpoints, etc.)
 colorscheme slate
 
+" Error/message handling
+set shortmess-=S         " Show search count message
+set cmdheight=2          " Give more space for displaying messages (helps see errors)
+set showcmd              " Show partial commands in status line
+
+" View message history - use :messages to see all previous errors/warnings
+" This stores more messages so you can review them later
+set history=1000         " Remember more command history
+
 " Tab and indentation settings
 set tabstop=2            " Width (in spaces) that a <tab> is displayed as
 set expandtab            " Expand tabs to spaces

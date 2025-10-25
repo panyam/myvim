@@ -176,6 +176,17 @@ Edit `.vimspector.json` in your project root for custom configurations:
 }
 ```
 
+## Viewing Error Messages
+
+If you see an error flash by too quickly to read:
+
+```vim
+:messages         " View all recent messages and errors
+,m                " Quick shortcut to view messages
+```
+
+Errors are now stored with `cmdheight=2` and larger history, making them easier to read and copy.
+
 ## Customizing Vimspector
 
 See `~/.vim/CUSTOMIZATION.md` for detailed instructions on:
