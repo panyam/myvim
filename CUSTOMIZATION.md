@@ -55,6 +55,38 @@ sign define vimspectorPC text=▶ texthl=MatchParen linehl=CursorLine
 
 ## Panel Layout Customization
 
+### Project-Specific Layout (Recommended)
+
+You can set the UI layout per-project in your `.vimspector.json` file:
+
+```json
+{
+  "ui": {
+    "Variables": { "pos": "right", "width": 60 },
+    "Watches": { "pos": "right", "width": 60 },
+    "Stack": { "pos": "right", "width": 60 },
+    "Output": { "pos": "bottom", "height": 10 },
+    "Console": { "pos": "bottom", "height": 10 }
+  },
+  "configurations": {
+    "Launch": {
+      "adapter": "vscode-go",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/main.go",
+        "mode": "debug"
+      }
+    }
+  }
+}
+```
+
+This way, different projects can have different layouts based on your preferences.
+
+### Global Layout Configuration
+
+To set a layout for all projects, edit `~/.vim/core/vimspector.vim` (around line 40-66).
+
 ### Current Default Layout
 
 ```
@@ -147,6 +179,9 @@ let g:vimspector_ui_config = {
 | `Console` | Interactive debug console (REPL) |
 | `Breakpoints` | List of all breakpoints |
 | `Disassembly` | Assembly code view |
+| `WinBar` | Top toolbar (usually 'top') |
+
+All panels are optional - only include the ones you want in your configuration.
 
 ## Panel Position Options
 

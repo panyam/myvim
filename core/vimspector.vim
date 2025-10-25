@@ -35,21 +35,35 @@ highlight vimspectorPC ctermbg=DarkBlue guibg=#005f87
 
 " UI Layout Configuration
 " Customize the window layout by setting g:vimspector_ui_config
-" Example layouts:
 "
-" Compact layout (code + terminal bottom, variables/watches right):
+" Available windows and their default positions:
 " let g:vimspector_ui_config = {
 "   \   'WinBar': { 'pos': 'top' },
-"   \   'Variables': { 'pos': 'right', 'width': 50 },
-"   \   'Watches': { 'pos': 'right', 'width': 50 },
-"   \   'Stack': { 'pos': 'right', 'width': 50 },
+"   \   'Variables': { 'pos': 'left', 'width': 50 },
+"   \   'Watches': { 'pos': 'left', 'width': 50 },
+"   \   'Stack': { 'pos': 'left', 'width': 50 },
+"   \   'Breakpoints': { 'pos': 'left', 'width': 50 },
 "   \   'Output': { 'pos': 'bottom', 'height': 10 },
-"   \   'Console': { 'pos': 'bottom', 'height': 10 }
+"   \   'Console': { 'pos': 'bottom', 'height': 10 },
+"   \   'Disassembly': { 'pos': 'bottom', 'height': 10 }
 "   \ }
 "
-" Default layout (variables/watches/stack top, code middle, output bottom):
+" Position options: 'left', 'right', 'top', 'bottom'
+" Size options: 'width' (for left/right), 'height' (for top/bottom)
+"
+" Project-specific layouts:
+"   You can also set this in your project's .vimspector.json:
+"   {
+"     "ui": {
+"       "Variables": { "pos": "right", "width": 60 },
+"       "Stack": { "pos": "right", "width": 60 }
+"     },
+"     "configurations": { ... }
+"   }
+"
+" Default: Use vimspector's built-in layout
 let g:vimspector_ui_config = {}
-" To customize, uncomment and modify the dictionary above
+" To customize globally, uncomment and modify the dictionary above
 
 " ============================================================================
 " Vimspector Key Mappings
