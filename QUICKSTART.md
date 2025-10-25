@@ -111,7 +111,7 @@ Edit `.vimspector.json` in your project root for custom configurations:
 {
   "configurations": {
     "Launch with custom args": {
-      "adapter": "vimspector-go",
+      "adapter": "vscode-go",
       "configuration": {
         "request": "launch",
         "program": "${workspaceRoot}/cmd/myapp/main.go",

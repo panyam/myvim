@@ -161,7 +161,7 @@ Edit `.vimspector.json` in your project root for custom configurations:
 {
   "configurations": {
     "Launch with custom args": {
-      "adapter": "vimspector-go",
+      "adapter": "vscode-go",
       "configuration": {
         "request": "launch",
         "program": "${workspaceRoot}/cmd/myapp/main.go",
@@ -664,6 +664,162 @@ DEBUGGING COMMANDS (Go)
   :GoDebugFile             Debug current file
   :GoDebugAttach PID       Attach to running process
 ```
+
+## Updating and Maintenance
+
+### Update Vim Configuration
+
+Pull latest changes from the repository:
+
+```bash
+cd ~/.vim
+git pull
+vim +PlugUpdate +qall
+```
+
+### Update Plugins
+
+Update all Vim plugins to their latest versions:
+
+```bash
+vim +PlugUpdate +qall
+```
+
+Or interactively in Vim:
+```vim
+:PlugUpdate
+```
+
+**When to update:** Monthly, or when you need a specific bug fix or feature from a plugin.
+
+### Update Vimspector Debug Adapters
+
+Update the Go debug adapter and other debuggers:
+
+```bash
+cd ~/.vim/plugged/vimspector
+./install_gadget.py --enable-go --force-all
+```
+
+Or update all installed adapters:
+```bash
+cd ~/.vim/plugged/vimspector
+./install_gadget.py --update-gadget-config
+./install_gadget.py --all --force-all
+```
+
+**When to update:**
+- When Go is updated to a new version
+- When you encounter debugging issues
+- Quarterly for bug fixes and improvements
+
+### Regenerate Help Tags
+
+After updating plugins or modifying help documentation:
+
+```vim
+:helptags ~/.vim/doc
+```
+
+Or from command line:
+```bash
+vim -u NONE -c "helptags ~/.vim/doc" -c "q"
+```
+
+**When to regenerate:** After modifying `~/.vim/doc/myvim.txt` or updating plugins with documentation.
+
+### Check Plugin Health
+
+View status of all plugins:
+```vim
+:PlugStatus
+```
+
+Clean up unused plugins (after removing from plugins.vim):
+```vim
+:PlugClean
+```
+
+### Verify Debug Adapter Installation
+
+Check which debug adapters are installed:
+```bash
+ls ~/.vim/plugged/vimspector/gadgets/macos/  # or linux
+```
+
+You should see:
+- `vscode-go` - Go debugging (recommended)
+- `delve` - Direct Delve adapter (alternative)
+
+### Available Debug Adapters
+
+**Go Debugging - Two Options:**
+
+1. **vscode-go** (Recommended):
+   - Official VS Code Go extension adapter
+   - Full-featured, best supported
+   - Used in default configurations
+
+2. **delve** (Alternative):
+   - Direct Delve debugger access
+   - Simpler, fewer features
+   - Use if vscode-go has issues
+
+**Switching adapters:** Edit `.vimspector.json` in your project and change:
+```json
+"adapter": "vscode-go"  // or "delve"
+```
+
+### Troubleshooting Adapter Issues
+
+**Adapter not found error:**
+```
+The specified adapter 'vscode-go' is not available
+```
+
+**Solution:**
+```bash
+cd ~/.vim/plugged/vimspector
+./install_gadget.py --enable-go --force-all
+```
+
+**List available adapters:**
+```vim
+:VimspectorInstall <Tab>  " Shows available adapters
+```
+
+### Complete Reinstall
+
+If things are broken, start fresh:
+
+```bash
+# Backup current config
+cp -r ~/.vim ~/.vim.backup
+
+# Remove and reinstall
+rm -rf ~/.vim
+git clone https://github.com/panyam/myvim ~/.vim
+cd ~/.vim
+./install.sh
+```
+
+### Maintenance Schedule
+
+**Weekly:**
+- None required (configuration is stable)
+
+**Monthly:**
+- Update plugins: `:PlugUpdate`
+- Check for vim config updates: `cd ~/.vim && git pull`
+
+**Quarterly:**
+- Update debug adapters: `./install_gadget.py --enable-go --force-all`
+- Review and update language-specific configs
+
+**As Needed:**
+- After Go version upgrade: Update vimspector adapters
+- When debugging fails: Reinstall adapters with `--force-all`
+- After adding new plugins: Run `:PlugInstall`
 
 ---
 
