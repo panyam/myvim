@@ -1,0 +1,50 @@
+# Vim Configuration .gitignore
+# Add this to your myconfigs/vim/.gitignore
+
+# Plugin directory (managed by vim-plug)
+plugged/
+
+# Swap files
+swapfiles/
+*.swp
+*.swo
+*.swn
+
+# Session files (optional - uncomment if you don't want to track sessions)
+# sessions/
+
+# Backup files
+*~
+*.bak
+.*.sw?
+
+# Netrw history
+.netrwhist
+
+# Undo files (if using persistent undo)
+*.un~
+
+# View files
+view/
+
+# Spell files
+*.spl
+*.sug
+
+# Tags
+tags
+tags.lock
+tags.temp
+
+# Mac OS
+.DS_Store
+
+# Temporary files
+tmp/
+temp/
+
+# Log files
+*.log
+
+# Auto-generated files
+autoload/plug.vim.old
