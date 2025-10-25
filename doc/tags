@@ -1,0 +1,17 @@
+:GoDB	myvim.txt	/*:GoDB*
+:GoDebugAttach	myvim.txt	/*:GoDebugAttach*
+:GoDebugFile	myvim.txt	/*:GoDebugFile*
+:Profile	myvim.txt	/*:Profile*
+:ProfileShow	myvim.txt	/*:ProfileShow*
+:VimspectorConfig	myvim.txt	/*:VimspectorConfig*
+:VimspectorReset	myvim.txt	/*:VimspectorReset*
+myvim-about	myvim.txt	/*myvim-about*
+myvim-contents	myvim.txt	/*myvim-contents*
+myvim-go-commands	myvim.txt	/*myvim-go-commands*
+myvim-go-config	myvim.txt	/*myvim-go-config*
+myvim-go-debugging	myvim.txt	/*myvim-go-debugging*
+myvim-go-mappings	myvim.txt	/*myvim-go-mappings*
+myvim-installation	myvim.txt	/*myvim-installation*
+myvim-introduction	myvim.txt	/*myvim-introduction*
+myvim-profiles	myvim.txt	/*myvim-profiles*
+myvim.txt	myvim.txt	/*myvim.txt*

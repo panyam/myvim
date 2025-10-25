@@ -64,6 +64,11 @@ else
     echo "  Run :PlugInstall in Vim and then install the adapter manually"
 fi
 
+# Generate help tags
+echo -e "${YELLOW}Generating help tags...${NC}"
+vim -u NONE -c "helptags ~/.vim/doc" -c "q" 2>/dev/null || true
+echo -e "${GREEN}[OK] Help tags generated${NC}"
+
 echo ""
 echo -e "${GREEN}Installation complete!${NC}"
 echo ""
@@ -71,6 +76,7 @@ echo "Next steps:"
 echo "  1. Open Vim: vim"
 echo "  2. Verify plugins: :PlugStatus"
 echo "  3. Read the docs: vim ~/.vim/README.md"
-echo "  4. Try Go debugging: vim ~/.vim/QUICKSTART.md"
+echo "  4. Get help: :help myvim"
+echo "  5. Try Go debugging: vim ~/.vim/QUICKSTART.md"
 echo ""
 echo "For more information, see ~/.vim/README.md"

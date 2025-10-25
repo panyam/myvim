@@ -2,7 +2,7 @@
 
 This is a modular Vim configuration system that keeps your setup organized, maintainable, and easy to extend.
 
-## 🚀 Installation
+##  Installation
 
 ### Fresh Installation
 
@@ -43,7 +43,7 @@ mv ~/.vimrc ~/.vimrc.backup.$(date +%Y%m%d) 2>/dev/null || true
 # Then proceed with installation above
 ```
 
-## 📁 Directory Structure
+##  Directory Structure
 
 ```
 ~/.vim/
@@ -77,7 +77,7 @@ This keeps everything self-contained in the `~/.vim/` directory.
 
 **Git Repository:** This configuration is designed to be a standalone Git repository that clones directly to `~/.vim/`.
 
-## 🚀 Quick Start
+##  Quick Start
 
 After installation (see above), verify everything works:
 
@@ -102,7 +102,7 @@ Everything should work automatically! When you open a file, Vim will:
 - Apply filetype-specific settings
 - Enable language-specific commands
 
-## 🎯 Go Debugging with Vimspector
+##  Go Debugging with Vimspector
 
 ### Quick Start
 
@@ -222,7 +222,7 @@ Edit `.vimspector.json` in your project root for custom configurations:
 - Buffer-local settings (tabs, indentation)
 - Sources corresponding `lang/<language>.vim`
 
-## 🔄 Profile/Workspace System
+##  Profile/Workspace System
 
 ### Switching Profiles Manually
 
@@ -244,7 +244,7 @@ The system can auto-detect your project type based on files:
 **Note:** Auto-detection is commented out by default in `core/profiles.vim`.
 To enable it, uncomment the autocmd line.
 
-## 🛠️ Adding New Languages
+## 🛠 Adding New Languages
 
 ### Example: Adding Ruby Support
 
@@ -283,7 +283,7 @@ To enable it, uncomment the autocmd line.
    " Or just open a .rb file - ftplugin auto-loads it
    ```
 
-## 📦 Project-Specific Configuration
+##  Project-Specific Configuration
 
 ### Local .vimrc Files
 
@@ -310,7 +310,7 @@ You can have project-specific settings:
 └── go.mod
 ```
 
-## 🎨 Customization
+##  Customization
 
 ### Adding Your Own Settings
 
@@ -332,7 +332,7 @@ command! MyCommand echo "Hello!"
 
 These override anything in the modular configs.
 
-## 📚 Common Tasks
+##  Common Tasks
 
 ### Install New Plugin
 
@@ -360,7 +360,7 @@ These override anything in the modular configs.
 :messages             " View recent messages
 ```
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Vimspector Not Working
 
@@ -400,7 +400,7 @@ These override anything in the modular configs.
 2. Enable filetype: `:filetype plugin indent on`
 3. Check if file exists: `:echo filereadable(expand('~/.vim/ftplugin/go.vim'))`
 
-## 🔍 Advanced Features
+##  Advanced Features
 
 ### Session Management
 
@@ -429,7 +429,7 @@ if has('mac')
 endif
 ```
 
-## 📖 Further Reading
+##  Further Reading
 
 ### Vimspector Documentation
 - GitHub: https://github.com/puremourning/vimspector
@@ -443,16 +443,19 @@ endif
 - vim-go: https://github.com/fatih/vim-go
 - Delve (Go debugger): https://github.com/go-delve/delve
 
-## 🆘 Getting Help
+##  Getting Help
 
 ```vim
+:help myvim                   " This configuration's help
+:help myvim-go-debugging      " Go debugging help
+:help GoDB                    " GoDB command help
 :help vimspector              " Vimspector help
 :help ale                     " ALE help
 :help ftplugin                " Filetype plugin help
 :help vim-plug                " Vim-Plug help
 ```
 
-## ✅ Testing Your Setup
+##  Testing Your Setup
 
 ### Quick Verification
 
@@ -625,7 +628,7 @@ cd ~/.vim/plugged/vimspector
 ./install_gadget.py --enable-go --force-all
 ```
 
-## 🔄 Reverting to Original
+##  Reverting to Original
 
 If you want to go back to your original configuration:
 
@@ -639,7 +642,7 @@ cp ~/.vimrc.backup ~/.vimrc  # or ~/.vim/vimrc
 
 Your original `.vimrc` is backed up at `~/.vimrc.backup`.
 
-## 📋 Quick Reference Card
+##  Quick Reference Card
 
 ```
 DEBUGGING (Go)

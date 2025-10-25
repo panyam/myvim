@@ -1,0 +1,199 @@
+*myvim.txt*  Custom Vim configuration with Go debugging support
+
+==============================================================================
+CONTENTS                                                      *myvim-contents*
+
+    1. Introduction .......................... |myvim-introduction|
+    2. Go Debugging .......................... |myvim-go-debugging|
+        2.1 Commands ......................... |myvim-go-commands|
+        2.2 Key Mappings ..................... |myvim-go-mappings|
+        2.3 Configuration .................... |myvim-go-config|
+    3. Profile Management .................... |myvim-profiles|
+    4. Installation .......................... |myvim-installation|
+    5. About ................................. |myvim-about|
+
+==============================================================================
+1. INTRODUCTION                                           *myvim-introduction*
+
+This is a modular Vim configuration system that provides language-specific
+configurations and TUI-based debugging support, particularly for Go.
+
+Repository: https://github.com/panyam/myvim
+
+==============================================================================
+2. GO DEBUGGING                                          *myvim-go-debugging*
+
+Integrated Go debugging using vimspector. Provides a full TUI debugging
+experience with breakpoints, stepping, variable inspection, and more.
+
+------------------------------------------------------------------------------
+2.1 GO COMMANDS                                          *myvim-go-commands*
+
+                                                                      *:GoDB*
+:GoDB [args]
+    Start debugging the main.go file (or current file if main.go doesn't
+    exist) with optional command-line arguments.
+
+    Examples: >
+        :GoDB
+        :GoDB --config=dev --port=8080
+        :GoDB arg1 arg2 arg3
+<
+
+                                                              *:GoDebugFile*
+:GoDebugFile
+    Debug the current Go file directly.
+
+    Example: >
+        :GoDebugFile
+<
+
+                                                            *:GoDebugAttach*
+:GoDebugAttach {pid}
+    Attach the debugger to a running Go process by process ID.
+
+    Example: >
+        :GoDebugAttach 12345
+<
+
+                                                          *:VimspectorConfig*
+:VimspectorConfig
+    Create or edit the .vimspector.json configuration file in the current
+    working directory. If the file doesn't exist, a default Go configuration
+    template will be created.
+
+    Example: >
+        :VimspectorConfig
+<
+
+                                                          *:VimspectorReset*
+:VimspectorReset
+    Reset the vimspector debugger state. Useful if the debugger gets into
+    an unexpected state.
+
+    Example: >
+        :VimspectorReset
+<
+
+------------------------------------------------------------------------------
+2.2 GO DEBUGGING KEY MAPPINGS                            *myvim-go-mappings*
+
+Default key mappings for debugging (when vimspector is active):
+
+    <F5>            Continue/Start debugging
+    <F3>            Stop debugging
+    <F4>            Restart debugging
+    <F6>            Pause execution
+
+    <F9>            Toggle breakpoint on current line
+    <Leader><F9>    Toggle conditional breakpoint
+    <F8>            Add function breakpoint
+
+    <F10>           Step over (execute current line)
+    <F11>           Step into (enter function)
+    <F12>           Step out (exit current function)
+
+    <Leader>di      Inspect variable under cursor (normal and visual mode)
+
+------------------------------------------------------------------------------
+2.3 GO DEBUGGING CONFIGURATION                             *myvim-go-config*
+
+Project-level configuration is done via .vimspector.json in your project
+root directory.
+
+Example configuration: >
+    {
+      "configurations": {
+        "Launch": {
+          "adapter": "vimspector-go",
+          "configuration": {
+            "request": "launch",
+            "program": "${workspaceRoot}/main.go",
+            "mode": "debug",
+            "args": []
+          }
+        },
+        "Launch with args": {
+          "adapter": "vimspector-go",
+          "configuration": {
+            "request": "launch",
+            "program": "${workspaceRoot}/main.go",
+            "mode": "debug",
+            "args": ["--config", "config.yaml"]
+          }
+        }
+      }
+    }
+<
+
+Use |:VimspectorConfig| to create a default template.
+
+Variables you can use in configuration:
+    ${workspaceRoot}    - Project root directory
+    ${file}             - Current file path
+    ${fileBasename}     - Current file name
+
+==============================================================================
+3. PROFILE MANAGEMENT                                       *myvim-profiles*
+
+Language-specific configurations can be loaded on-demand.
+
+                                                                   *:Profile*
+:Profile {language}
+    Load a language-specific profile (go, javascript, python, rust).
+
+    Examples: >
+        :Profile go
+        :Profile javascript
+        :Profile python
+<
+
+                                                              *:ProfileShow*
+:ProfileShow
+    Display the currently active profile.
+
+    Example: >
+        :ProfileShow
+<
+
+Note: Profiles are also auto-loaded via ftplugin when you open files of
+that type.
+
+==============================================================================
+4. INSTALLATION                                         *myvim-installation*
+
+Clone and install: >
+    git clone https://github.com/panyam/myvim ~/.vim
+    cd ~/.vim
+    ./install.sh
+<
+
+Manual installation: >
+    git clone https://github.com/panyam/myvim ~/.vim
+
+    # Install vim-plug
+    curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+    # Install plugins
+    vim +PlugInstall +qall
+
+    # Install Go debugger adapter
+    cd ~/.vim/plugged/vimspector
+    ./install_gadget.py --enable-go
+<
+
+==============================================================================
+5. ABOUT                                                       *myvim-about*
+
+Author:  Your Name
+License: MIT
+URL:     https://github.com/panyam/myvim
+
+For bug reports and contributions, visit the GitHub repository.
+
+Full documentation: ~/.vim/README.md
+Quick reference: ~/.vim/QUICKSTART.md
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:

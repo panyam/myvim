@@ -31,10 +31,11 @@ view/
 *.spl
 *.sug
 
-# Tags
+# Tags (but keep help tags)
 tags
 tags.lock
 tags.temp
+!doc/tags
 
 # Mac OS
 .DS_Store
