@@ -42,10 +42,32 @@ nmap <Leader>di <Plug>VimspectorBalloonEval
 xmap <Leader>di <Plug>VimspectorBalloonEval
 
 " ============================================================================
-" Vimspector Helper Commands
+" Vimspector Helper Commands (Command-Mode Interface)
 " ============================================================================
 
-" Quick command to reset vimspector
+" Debugging control commands
+command! DebugStart call vimspector#Continue()
+command! DebugContinue call vimspector#Continue()
+command! DebugStop call vimspector#Stop()
+command! DebugRestart call vimspector#Restart()
+command! DebugPause call vimspector#Pause()
+command! DebugReset call vimspector#Reset()
+
+" Breakpoint commands
+command! BreakAdd call vimspector#ToggleBreakpoint()
+command! BreakToggle call vimspector#ToggleBreakpoint()
+command! BreakDel call vimspector#ToggleBreakpoint()
+command! BreakCond call vimspector#ToggleAdvancedBreakpoint()
+command! BreakFunc call vimspector#AddFunctionBreakpoint()
+command! BreakClearAll call vimspector#ClearBreakpoints()
+
+" Stepping commands
+command! StepOver call vimspector#StepOver()
+command! StepInto call vimspector#StepInto()
+command! StepOut call vimspector#StepOut()
+command! RunToCursor call vimspector#RunToCursor()
+
+" Legacy command for backwards compatibility
 command! VimspectorReset call vimspector#Reset()
 
 " Command to quickly create/edit .vimspector.json in current directory

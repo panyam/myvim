@@ -75,6 +75,108 @@ experience with breakpoints, stepping, variable inspection, and more.
         :VimspectorReset
 <
 
+                                                              *:DebugStart*
+:DebugStart
+:DebugContinue
+    Start or continue debugging execution. Same as <F5>.
+
+    Example: >
+        :DebugStart
+<
+
+                                                               *:DebugStop*
+:DebugStop
+    Stop the debugging session. Same as <F3>.
+
+    Example: >
+        :DebugStop
+<
+
+                                                            *:DebugRestart*
+:DebugRestart
+    Restart the current debugging session. Same as <F4>.
+
+    Example: >
+        :DebugRestart
+<
+
+                                                              *:DebugPause*
+:DebugPause
+    Pause execution during debugging. Same as <F6>.
+
+    Example: >
+        :DebugPause
+<
+
+                                                               *:BreakAdd*
+:BreakAdd
+:BreakToggle
+:BreakDel
+    Toggle a breakpoint on the current line. Same as <F9>.
+    All three commands do the same thing (toggle).
+
+    Example: >
+        :BreakAdd
+        :BreakDel
+<
+
+                                                              *:BreakCond*
+:BreakCond
+    Add or edit a conditional breakpoint. Same as <Leader><F9>.
+
+    Example: >
+        :BreakCond
+<
+
+                                                              *:BreakFunc*
+:BreakFunc
+    Add a function breakpoint. Same as <F8>.
+
+    Example: >
+        :BreakFunc
+<
+
+                                                          *:BreakClearAll*
+:BreakClearAll
+    Clear all breakpoints in the current session.
+
+    Example: >
+        :BreakClearAll
+<
+
+                                                              *:StepOver*
+:StepOver
+    Step over the current line (execute without entering functions).
+    Same as <F10>.
+
+    Example: >
+        :StepOver
+<
+
+                                                              *:StepInto*
+:StepInto
+    Step into the function on the current line. Same as <F11>.
+
+    Example: >
+        :StepInto
+<
+
+                                                               *:StepOut*
+:StepOut
+    Step out of the current function. Same as <F12>.
+
+    Example: >
+        :StepOut
+<
+
+                                                           *:RunToCursor*
+:RunToCursor
+    Continue execution until reaching the line where the cursor is located.
+
+    Example: >
+        :RunToCursor
+<
+
 ------------------------------------------------------------------------------
 2.2 GO DEBUGGING KEY MAPPINGS                            *myvim-go-mappings*
 

@@ -70,19 +70,21 @@ In Vim, run:
 
 ### Debugging Key Mappings
 
-| Key | Action |
-|-----|--------|
-| `F5` | Continue/Start debugging |
-| `F3` | Stop debugging |
-| `F4` | Restart debugging |
-| `F6` | Pause |
-| `F9` | Toggle breakpoint |
-| `Leader+F9` | Conditional breakpoint |
-| `F8` | Function breakpoint |
-| `F10` | Step over |
-| `F11` | Step into |
-| `F12` | Step out |
-| `Leader+di` | Inspect variable under cursor |
+| Key | Action | Command Mode Alternative |
+|-----|--------|-------------------------|
+| `F5` | Continue/Start debugging | `:DebugStart` |
+| `F3` | Stop debugging | `:DebugStop` |
+| `F4` | Restart debugging | `:DebugRestart` |
+| `F6` | Pause | `:DebugPause` |
+| `F9` | Toggle breakpoint | `:BreakAdd` or `:BreakDel` |
+| `Leader+F9` | Conditional breakpoint | `:BreakCond` |
+| `F8` | Function breakpoint | `:BreakFunc` |
+| `F10` | Step over | `:StepOver` |
+| `F11` | Step into | `:StepInto` |
+| `F12` | Step out | `:StepOut` |
+| `Leader+di` | Inspect variable under cursor | (key mapping only) |
+
+**Prefer command mode?** All debugging operations have `:Command` equivalents!
 
 ### Example Usage
 
@@ -93,14 +95,26 @@ In Vim, run:
 " Set a breakpoint on line 42
 :42     " Go to line 42
 <F9>    " Toggle breakpoint
+" OR use command mode:
+:BreakAdd
 
 " Start debugging with arguments
 :GoDB --config=dev --port=8080
+:DebugStart
 
-" When stopped at breakpoint:
+" When stopped at breakpoint (use keys or commands):
 <F11>   " Step into function
+:StepInto
+
 <F10>   " Step over line
+:StepOver
+
 <F12>   " Step out of function
+:StepOut
+
+" Stop debugging
+<F3>
+:DebugStop
 ```
 
 ### Custom Debugging Configurations
@@ -133,13 +147,27 @@ Edit `.vimspector.json` in your project root for custom configurations:
 - `:help GoDB` - Help for GoDB command
 - `:help myvim-go-debugging` - Complete Go debugging documentation
 - `:help myvim-go-mappings` - List of all debugging key mappings
+- `:help DebugStart` - Help for command-mode debugging commands
 
-### Go Debugging
+### Go Debugging Commands
 - `:GoDB arg1 arg2` - Debug main.go with arguments
 - `:GoDebugFile` - Debug current file
 - `:GoDebugAttach PID` - Attach to running process
 - `:VimspectorConfig` - Create/edit .vimspector.json
 - `:VimspectorReset` - Reset debugger state
+
+### Debugging Control (Command Mode)
+- `:DebugStart` / `:DebugContinue` - Start or continue execution
+- `:DebugStop` - Stop debugging
+- `:DebugRestart` - Restart session
+- `:DebugPause` - Pause execution
+- `:BreakAdd` / `:BreakDel` - Toggle breakpoint on current line
+- `:BreakCond` - Add conditional breakpoint
+- `:BreakClearAll` - Clear all breakpoints
+- `:StepOver` - Step over current line
+- `:StepInto` - Step into function
+- `:StepOut` - Step out of function
+- `:RunToCursor` - Run until cursor position
 
 ### Profiles
 - `:Profile go` - Load Go profile
