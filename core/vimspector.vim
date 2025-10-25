@@ -71,7 +71,7 @@ let g:vimspector_ui_config = {}
 
 " Main debugging controls
 nmap <F5> <Plug>VimspectorContinue
-nmap <F3> <Plug>VimspectorStop
+nmap <F3> :call vimspector#Stop()<CR>:call vimspector#Reset()<CR>
 nmap <F4> <Plug>VimspectorRestart
 nmap <F6> <Plug>VimspectorPause
 
@@ -102,11 +102,12 @@ command! DebugPause call vimspector#Pause()
 command! DebugReset call vimspector#Reset()
 
 " Auto-close vimspector panels when debugging stops
-augroup VimspectorAutoClose
-  autocmd!
-  " When a debug session ends, reset vimspector (closes panels)
-  autocmd User VimspectorDebugEnded call vimspector#Reset()
-augroup END
+" NOTE: We handle this in the DebugStop command instead of using an autocommand
+" to avoid infinite recursion (Reset triggers DebugEnded which would trigger Reset again)
+" augroup VimspectorAutoClose
+"   autocmd!
+"   autocmd User VimspectorDebugEnded call vimspector#Reset()
+" augroup END
 
 " Breakpoint commands
 command! BreakAdd call vimspector#ToggleBreakpoint()
