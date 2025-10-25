@@ -10,6 +10,7 @@ syntax on
 " Display settings
 set number                " Show line numbers
 set hlsearch             " Highlight search results
+set signcolumn=yes       " Always show sign column (for breakpoints, etc.)
 colorscheme slate
 
 " Tab and indentation settings

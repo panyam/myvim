@@ -176,6 +176,16 @@ Edit `.vimspector.json` in your project root for custom configurations:
 }
 ```
 
+## Customizing Vimspector
+
+See `~/.vim/CUSTOMIZATION.md` for detailed instructions on:
+- Making breakpoints more visible
+- Customizing panel layouts
+- Changing sign characters and colors
+- Auto-closing panels when debugging stops
+
+Quick customization: Edit `~/.vim/core/vimspector.vim` (lines 20-52)
+
 ## 📝 Configuration Files Explained
 
 ### Core Files

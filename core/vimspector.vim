@@ -17,6 +17,40 @@ let g:vimspector_sign_priority = {
   \    'vimspectorPC':         999,
   \ }
 
+" Customize breakpoint and execution signs
+" You can customize the appearance with signcolumn characters
+" Uncomment and modify these to change the appearance:
+" sign define vimspectorBP text=●  texthl=WarningMsg
+" sign define vimspectorBPCond text=◆  texthl=WarningMsg
+" sign define vimspectorBPLog text=◆  texthl=SpellRare
+" sign define vimspectorBPDisabled text=●  texthl=LineNr
+" sign define vimspectorPC text=▶  texthl=MatchParen linehl=CursorLine
+" sign define vimspectorPCBP text=●▶ texthl=MatchParen linehl=CursorLine
+
+" Highlight groups for better visibility
+" Customize these colors to your preference
+highlight vimspectorBP ctermfg=Red guifg=#ff0000
+highlight vimspectorBPCond ctermfg=Yellow guifg=#ffff00
+highlight vimspectorPC ctermbg=DarkBlue guibg=#005f87
+
+" UI Layout Configuration
+" Customize the window layout by setting g:vimspector_ui_config
+" Example layouts:
+"
+" Compact layout (code + terminal bottom, variables/watches right):
+" let g:vimspector_ui_config = {
+"   \   'WinBar': { 'pos': 'top' },
+"   \   'Variables': { 'pos': 'right', 'width': 50 },
+"   \   'Watches': { 'pos': 'right', 'width': 50 },
+"   \   'Stack': { 'pos': 'right', 'width': 50 },
+"   \   'Output': { 'pos': 'bottom', 'height': 10 },
+"   \   'Console': { 'pos': 'bottom', 'height': 10 }
+"   \ }
+"
+" Default layout (variables/watches/stack top, code middle, output bottom):
+let g:vimspector_ui_config = {}
+" To customize, uncomment and modify the dictionary above
+
 " ============================================================================
 " Vimspector Key Mappings
 " ============================================================================
@@ -48,10 +82,17 @@ xmap <Leader>di <Plug>VimspectorBalloonEval
 " Debugging control commands
 command! DebugStart call vimspector#Continue()
 command! DebugContinue call vimspector#Continue()
-command! DebugStop call vimspector#Stop()
+command! DebugStop call vimspector#Stop() | call vimspector#Reset()
 command! DebugRestart call vimspector#Restart()
 command! DebugPause call vimspector#Pause()
 command! DebugReset call vimspector#Reset()
+
+" Auto-close vimspector panels when debugging stops
+augroup VimspectorAutoClose
+  autocmd!
+  " When a debug session ends, reset vimspector (closes panels)
+  autocmd User VimspectorDebugEnded call vimspector#Reset()
+augroup END
 
 " Breakpoint commands
 command! BreakAdd call vimspector#ToggleBreakpoint()
