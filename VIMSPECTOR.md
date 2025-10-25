@@ -11,6 +11,7 @@ Vimspector provides a complete visual debugging experience in Vim, supporting mu
 - [Configuration](#configuration)
 - [Debugging Commands](#debugging-commands)
 - [Example Workflows](#example-workflows)
+  - [Debugging with Stdin Redirection](#example-4-debugging-with-stdin-redirection)
 - [Troubleshooting](#troubleshooting)
 - [Advanced Topics](#advanced-topics)
 
@@ -57,11 +58,18 @@ You should see:
 
 The configuration includes custom Go debugging commands that make it easy to start debugging:
 
-| Command | Description |
-|---------|-------------|
-| `:GoDB [args...]` | Debug main.go with optional arguments |
-| `:GoDebugFile` | Debug the current Go file |
-| `:GoDebugAttach [PID]` | Attach to a running process |
+| Command | Description | Example |
+|---------|-------------|---------|
+| `:GoDB [args...]` | Debug main.go with optional arguments | `:GoDB --config dev.yaml --port 8080` |
+| `:GoDBStdin <file> [args...]` | Debug with stdin from file | `:GoDBStdin input.txt --verbose` |
+| `:GoDBPrompt` | Prompt for arguments before debugging | `:GoDBPrompt` |
+| `:GoDebugFile` | Debug the current Go file | `:GoDebugFile` |
+| `:GoDebugAttach [PID]` | Attach to a running process | `:GoDebugAttach 12345` |
+
+**Notes:**
+- `:GoDB` - Specify arguments at launch time without editing `.vimspector.json`
+- `:GoDBStdin` - First argument is the input file, remaining args go to your program
+- `:GoDBPrompt` - Interactively prompts you for arguments before starting debugger
 
 ### Creating Configuration Files
 
@@ -93,10 +101,28 @@ Create `.vimspector.json` in your project root:
 
 Edit `.vimspector.json` for advanced scenarios:
 
+**Basic configuration with arguments:**
 ```json
 {
   "configurations": {
-    "Launch with custom args": {
+    "Launch with args": {
+      "adapter": "vscode-go",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/main.go",
+        "mode": "debug",
+        "args": ["--config", "config.yaml", "--verbose"]
+      }
+    }
+  }
+}
+```
+
+**With environment variables:**
+```json
+{
+  "configurations": {
+    "Launch development": {
       "adapter": "vscode-go",
       "configuration": {
         "request": "launch",
@@ -104,10 +130,55 @@ Edit `.vimspector.json` for advanced scenarios:
         "mode": "debug",
         "args": ["--config", "config.yaml"],
         "env": {
-          "GO_ENV": "development"
+          "GO_ENV": "development",
+          "DEBUG": "true"
         }
       }
-    },
+    }
+  }
+}
+```
+
+**With stdin redirection from file:**
+```json
+{
+  "configurations": {
+    "Launch with stdin": {
+      "adapter": "vscode-go",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/main.go",
+        "mode": "debug",
+        "args": ["arg1", "arg2"],
+        "console": "integratedTerminal",
+        "input": "${workspaceRoot}/testdata/input.txt"
+      }
+    }
+  }
+}
+```
+
+**With integrated console (for interactive input):**
+```json
+{
+  "configurations": {
+    "Launch interactive": {
+      "adapter": "vscode-go",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/main.go",
+        "mode": "debug",
+        "console": "integratedTerminal"
+      }
+    }
+  }
+}
+```
+
+**Debug tests:**
+```json
+{
+  "configurations": {
     "Debug tests": {
       "adapter": "vscode-go",
       "configuration": {
@@ -172,6 +243,25 @@ nnoremap <Leader>ds :call vimspector#Stop()<CR>
 "adapter": "vscode-go"  // or "delve"
 ```
 
+### Configuration Options
+
+**Common configuration options for `.vimspector.json`:**
+
+| Option | Description | Example |
+|--------|-------------|---------|
+| `program` | Path to program to debug | `"${workspaceRoot}/main.go"` |
+| `args` | Command-line arguments as array | `["--config", "dev.yaml", "--verbose"]` |
+| `env` | Environment variables | `{"GO_ENV": "dev"}` |
+| `cwd` | Working directory | `"${workspaceRoot}"` |
+| `console` | Console type | `"integratedTerminal"` or `"externalTerminal"` |
+| `input` | Stdin redirection from file | `"${workspaceRoot}/testdata/input.txt"` |
+| `mode` | Debug mode | `"debug"`, `"test"`, or `"exec"` |
+
+**Console options:**
+- `"integratedTerminal"` - Run in Vim's terminal (supports interactive input)
+- `"externalTerminal"` - Run in external terminal window
+- Not specified - Run without terminal (no stdin/stdout interaction)
+
 ### UI Layout Configuration
 
 See [CUSTOMIZATION.md](CUSTOMIZATION.md) for detailed UI customization options.
@@ -209,9 +299,27 @@ Quick example - add to `.vimspector.json`:
 These are provided by this configuration (`lang/go.vim`):
 
 ```vim
-:GoDB [args...]            " Debug main.go with arguments
-:GoDebugFile               " Debug current file
-:GoDebugAttach [PID]       " Attach to running process
+:GoDB [args...]                    " Debug main.go with arguments
+:GoDBStdin <file> [args...]        " Debug with stdin from file
+:GoDBPrompt                        " Prompt for arguments interactively
+:GoDebugFile                       " Debug current file
+:GoDebugAttach [PID]               " Attach to running process
+```
+
+**Examples:**
+```vim
+" Simple debugging
+:GoDB
+
+" With arguments
+:GoDB --config dev.yaml --port 8080
+
+" With stdin redirection
+:GoDBStdin testdata/input.txt --verbose
+
+" Interactive prompt
+:GoDBPrompt
+" (You'll be asked: Debug arguments: )
 ```
 
 ## Example Workflows
@@ -308,6 +416,165 @@ In Vim:
 
 " Enter condition (e.g., i == 10)
 " The debugger will only stop when the condition is true
+```
+
+### Example 4: Debugging with Stdin Redirection
+
+For programs that read from stdin, you have several options:
+
+**Option 1: Using `:GoDBStdin` command (Easiest!)**
+
+Create `testdata/input.txt`:
+```
+line 1
+line 2
+line 3
+```
+
+Then simply run:
+```vim
+:GoDBStdin testdata/input.txt
+
+" Or with additional arguments:
+:GoDBStdin testdata/input.txt --verbose --config dev.yaml
+```
+
+This automatically:
+- Redirects stdin from the file
+- Passes remaining arguments to your program
+- No need to edit `.vimspector.json`!
+
+**Option 2: Using `.vimspector.json` configuration**
+
+Create `.vimspector.json`:
+```json
+{
+  "configurations": {
+    "Launch with input": {
+      "adapter": "vscode-go",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/main.go",
+        "mode": "debug",
+        "console": "integratedTerminal",
+        "input": "${workspaceRoot}/testdata/input.txt"
+      }
+    }
+  }
+}
+```
+
+Then launch with F5 or `:call vimspector#Launch()`
+
+**Option 3: Interactive terminal**
+
+For programs that need interactive input during debugging:
+
+```json
+{
+  "configurations": {
+    "Launch interactive": {
+      "adapter": "vscode-go",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/main.go",
+        "mode": "debug",
+        "console": "integratedTerminal"
+      }
+    }
+  }
+}
+```
+
+With `console: "integratedTerminal"`, you can type input directly in the terminal window.
+
+**Option 4: Using shell redirection (external terminal)**
+
+```json
+{
+  "configurations": {
+    "Launch external": {
+      "adapter": "vscode-go",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/main.go",
+        "mode": "debug",
+        "console": "externalTerminal",
+        "args": []
+      }
+    }
+  }
+}
+```
+
+This opens an external terminal where you can manually use shell redirection.
+
+### Passing Arguments: Two Approaches
+
+**Approach 1: Runtime arguments (Recommended for testing)**
+
+Use the `:GoDB` command to specify arguments each time you debug:
+
+```vim
+:GoDB --config dev.yaml --verbose --port 8080
+```
+
+This is perfect when:
+- You're testing different argument combinations
+- Arguments change frequently
+- You don't want to edit `.vimspector.json` each time
+
+**Approach 2: Pre-configured arguments**
+
+Define arguments in `.vimspector.json` for consistent debugging:
+
+```json
+{
+  "configurations": {
+    "Launch with args": {
+      "adapter": "vscode-go",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/main.go",
+        "mode": "debug",
+        "args": ["--config", "dev.yaml", "--verbose", "--port", "8080"]
+      }
+    }
+  }
+}
+```
+
+Then simply:
+```vim
+:call vimspector#Launch()
+" or press F5
+```
+
+This is better when:
+- You have standard arguments for this project
+- You want to save typing
+- You have multiple configurations (dev, prod, test)
+
+**Approach 3: Prompt for arguments**
+
+You can also create a configuration that lets you enter args interactively. Unfortunately, vimspector doesn't support prompting directly, but you can use Vim's `input()` function with a custom command.
+
+Add to `~/.vim/lang/go.vim`:
+```vim
+command! GoDBPrompt call s:GoDBWithPrompt()
+
+function! s:GoDBWithPrompt()
+  let l:args_str = input('Debug arguments: ')
+  let l:args_list = split(l:args_str, ' ')
+  execute 'GoDB ' . l:args_str
+endfunction
+```
+
+Then use:
+```vim
+:GoDBPrompt
+" You'll be prompted: Debug arguments:
+" Type: --config dev.yaml --port 8080
 ```
 
 ## Troubleshooting
