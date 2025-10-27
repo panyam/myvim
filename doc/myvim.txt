@@ -32,12 +32,38 @@ experience with breakpoints, stepping, variable inspection, and more.
                                                                       *:GoDB*
 :GoDB [args]
     Start debugging the main.go file (or current file if main.go doesn't
-    exist) with optional command-line arguments.
+    exist) with optional command-line arguments. Arguments are passed
+    directly to your program at runtime without editing .vimspector.json.
 
     Examples: >
         :GoDB
         :GoDB --config=dev --port=8080
         :GoDB arg1 arg2 arg3
+<
+
+                                                                *:GoDBStdin*
+:GoDBStdin {input-file} [args]
+    Start debugging with stdin redirected from a file. The first argument
+    is the input file path, and remaining arguments are passed to your
+    program. This automatically configures the integrated terminal and
+    input redirection.
+
+    Examples: >
+        :GoDBStdin testdata/input.txt
+        :GoDBStdin input.txt --verbose --config dev.yaml
+        :GoDBStdin /tmp/test-input.txt arg1 arg2
+<
+
+                                                               *:GoDBPrompt*
+:GoDBPrompt
+    Interactively prompt for debug arguments before starting the debugger.
+    This is useful when you want to specify different arguments each time
+    without typing the full :GoDB command.
+
+    Example: >
+        :GoDBPrompt
+        " You'll be prompted: Debug arguments:
+        " Type your arguments and press Enter
 <
 
                                                               *:GoDebugFile*
@@ -201,7 +227,8 @@ Default key mappings for debugging (when vimspector is active):
 2.3 GO DEBUGGING CONFIGURATION                             *myvim-go-config*
 
 Project-level configuration is done via .vimspector.json in your project
-root directory.
+root directory. However, for quick debugging sessions, you can use the
+|:GoDB|, |:GoDBStdin|, or |:GoDBPrompt| commands without creating a config.
 
 Example configuration: >
     {
@@ -223,6 +250,16 @@ Example configuration: >
             "mode": "debug",
             "args": ["--config", "config.yaml"]
           }
+        },
+        "Launch with stdin": {
+          "adapter": "vscode-go",
+          "configuration": {
+            "request": "launch",
+            "program": "${workspaceRoot}/main.go",
+            "mode": "debug",
+            "console": "integratedTerminal",
+            "input": "${workspaceRoot}/testdata/input.txt"
+          }
         }
       }
     }
@@ -230,10 +267,22 @@ Example configuration: >
 
 Use |:VimspectorConfig| to create a default template.
 
+Configuration options:
+    program             - Path to Go program to debug
+    args                - Array of command-line arguments
+    env                 - Environment variables (key-value object)
+    cwd                 - Working directory
+    console             - "integratedTerminal" or "externalTerminal"
+    input               - Path to file for stdin redirection
+    mode                - "debug", "test", or "exec"
+
 Variables you can use in configuration:
     ${workspaceRoot}    - Project root directory
     ${file}             - Current file path
     ${fileBasename}     - Current file name
+
+For more details, see:
+    ~/.vim/VIMSPECTOR.md
 
 ==============================================================================
 3. PROFILE MANAGEMENT                                       *myvim-profiles*
