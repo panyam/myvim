@@ -18,20 +18,27 @@ let g:vimspector_sign_priority = {
   \ }
 
 " Customize breakpoint and execution signs
-" You can customize the appearance with signcolumn characters
-" Uncomment and modify these to change the appearance:
-" sign define vimspectorBP text=●  texthl=WarningMsg
-" sign define vimspectorBPCond text=◆  texthl=WarningMsg
-" sign define vimspectorBPLog text=◆  texthl=SpellRare
-" sign define vimspectorBPDisabled text=●  texthl=LineNr
-" sign define vimspectorPC text=▶  texthl=MatchParen linehl=CursorLine
-" sign define vimspectorPCBP text=●▶ texthl=MatchParen linehl=CursorLine
+" These define the visual appearance of debugging indicators in the sign column
+
+" Breakpoint signs
+sign define vimspectorBP text=●  texthl=WarningMsg
+sign define vimspectorBPCond text=◆  texthl=WarningMsg
+sign define vimspectorBPLog text=◆  texthl=SpellRare
+sign define vimspectorBPDisabled text=●  texthl=LineNr
+
+" Program Counter (current line) signs with line highlighting
+" linehl= parameter highlights the entire line for clear visibility during stepping
+sign define vimspectorPC text=▶  texthl=MatchParen linehl=VimspectorCurrentLine
+sign define vimspectorPCBP text=●▶ texthl=MatchParen linehl=VimspectorCurrentLine
 
 " Highlight groups for better visibility
 " Customize these colors to your preference
 highlight vimspectorBP ctermfg=Red guifg=#ff0000
 highlight vimspectorBPCond ctermfg=Yellow guifg=#ffff00
-highlight vimspectorPC ctermbg=DarkBlue guibg=#005f87
+
+" Current line highlighting - using a distinct color that stands out
+" This is applied to the entire line when the debugger is paused
+highlight VimspectorCurrentLine ctermbg=DarkBlue ctermfg=White guibg=#005f87 guifg=#ffffff
 
 " UI Layout Configuration
 " Customize the window layout by setting g:vimspector_ui_config
@@ -128,6 +135,32 @@ command! VimspectorReset call vimspector#Reset()
 
 " Command to quickly create/edit .vimspector.json in current directory
 command! VimspectorConfig call s:EditVimspectorConfig()
+
+" ============================================================================
+" Vimspector UI Customization
+" ============================================================================
+
+" Customize UI windows when vimspector starts
+function! s:CustomizeVimspectorUI()
+  " Enable text wrapping in the Stack Trace window so long method names wrap
+  " instead of requiring horizontal scrolling or window resizing
+  if exists('g:vimspector_session_windows.stack_trace')
+    call win_gotoid(g:vimspector_session_windows.stack_trace)
+    setlocal wrap
+    setlocal linebreak  " Break at word boundaries for cleaner wrapping
+    wincmd p  " Return to previous window
+  endif
+endfunction
+
+" Auto-customize UI when vimspector session starts
+augroup VimspectorUICustomization
+  autocmd!
+  autocmd User VimspectorUICreated call s:CustomizeVimspectorUI()
+augroup END
+
+" ============================================================================
+" Vimspector Helper Functions
+" ============================================================================
 
 function! s:EditVimspectorConfig()
   let l:config_file = getcwd() . '/.vimspector.json'
