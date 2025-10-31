@@ -130,6 +130,10 @@ command! StepInto call vimspector#StepInto()
 command! StepOut call vimspector#StepOut()
 command! RunToCursor call vimspector#RunToCursor()
 
+" Short convenience commands (available anytime)
+command! -nargs=0 BR call vimspector#ToggleBreakpoint()
+command! -nargs=0 DR call vimspector#Restart()
+
 " Legacy command for backwards compatibility
 command! VimspectorReset call vimspector#Reset()
 
@@ -186,30 +190,30 @@ endfunction
 function! s:SetupDebugMappings()
   " Only set mappings in code buffers, not debug windows
   if &buftype == ''
+    " Comma mappings for quick actions
     nnoremap <buffer> <silent> ,r :call vimspector#StepOut()<CR>
     nnoremap <buffer> <silent> ,c :call <SID>SmartContinue()<CR>
-    nnoremap <buffer> <silent> ,si :call vimspector#StepInto()<CR>
-    nnoremap <buffer> <silent> ,b :call vimspector#ToggleBreakpoint()<CR>
-    nnoremap <buffer> <silent> ,dc :call vimspector#Stop()<CR>
-    nnoremap <buffer> <silent> ,dr :call vimspector#Restart()<CR>
-
-    " Also add step over for convenience
     nnoremap <buffer> <silent> ,n :call vimspector#StepOver()<CR>
 
-    echo "Debug mappings enabled: ,r=StepOut ,c=Continue/RunToCursor ,si=StepInto ,n=StepOver ,b=ToggleBreak ,dc=Stop ,dr=Restart"
+    " Buffer-local convenience commands (only active during debug)
+    command! -buffer -nargs=0 SI call vimspector#StepInto()
+    command! -buffer -nargs=0 DC call vimspector#Stop() | call vimspector#Reset()
+
+    echo "Debug mappings enabled: ,r=StepOut ,c=Continue/RunToCursor ,n=StepOver | Commands: :SI :DC (always: :BR :DR)"
   endif
 endfunction
 
 " Remove debug mappings when debug session ends
 function! s:RemoveDebugMappings()
   if &buftype == ''
+    " Remove mappings
     silent! nunmap <buffer> ,r
     silent! nunmap <buffer> ,c
-    silent! nunmap <buffer> ,si
-    silent! nunmap <buffer> ,b
-    silent! nunmap <buffer> ,dc
-    silent! nunmap <buffer> ,dr
     silent! nunmap <buffer> ,n
+
+    " Remove buffer-local commands
+    silent! delcommand SI
+    silent! delcommand DC
   endif
 endfunction
 
