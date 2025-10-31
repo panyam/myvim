@@ -366,7 +366,10 @@ Each project can customize the debug UI layout by adding a `"ui"` section to `.v
 }
 ```
 
-**Pro Tip:** Use `:BL` or `,db` to toggle the Breakpoints panel at any time during debugging.
+**Important Notes:**
+- The Breakpoints panel (from `"ui"` config) only appears automatically when breakpoints are set
+- To see it in your configured position: set breakpoints with `:BR` before starting debug
+- `:BL` or `,db` opens a separate quick-view window (always at bottom, not affected by `"ui"` config)
 
 ## Debugging Commands
 

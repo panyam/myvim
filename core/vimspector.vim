@@ -178,6 +178,10 @@ function! s:CustomizeVimspectorUI()
     setlocal linebreak  " Break at word boundaries for cleaner wrapping
     wincmd p  " Return to previous window
   endif
+
+  " Note: The Breakpoints panel from "ui" config only appears automatically
+  " when breakpoints are set. Set breakpoints before debugging to see it
+  " in your configured position, or use :BL to toggle it manually
 endfunction
 
 " Auto-customize UI when vimspector session starts
