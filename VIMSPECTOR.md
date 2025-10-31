@@ -17,19 +17,26 @@ Vimspector provides a complete visual debugging experience in Vim, supporting mu
 
 ## Quick Start
 
-1. **In your Go project root**, create a `.vimspector.json` (or use the helper):
+1. **Set a breakpoint** (program will exit immediately without one):
    ```vim
-   :VimspectorConfig
+   :call vimspector#ToggleBreakpoint()
+   " or press <F9>
    ```
-   This creates a default configuration file.
 
 2. **Start debugging**:
    ```vim
-   :GoDB arg1 arg2           " Debug main.go with arguments
-   :GoDebugFile              " Debug current file
+   :GoDebug main.go              " Debug a specific file
+   :GoDebug .                    " Debug current directory (all .go files)
+   :GoDebug . arg1 arg2          " Debug with arguments
    ```
 
-3. **Set breakpoints** and use F-keys to control execution (see [Key Mappings](#key-mappings))
+3. **Use F-keys to control execution** (see [Key Mappings](#key-mappings))
+
+4. **Optional: Use `.vimspector.json`** for saved configurations:
+   ```vim
+   :VimspectorConfig             " Create config file
+   <F5>                          " Launch using .vimspector.json
+   ```
 
 ## Installation
 
@@ -60,16 +67,27 @@ The configuration includes custom Go debugging commands that make it easy to sta
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `:GoDB [args...]` | Debug main.go with optional arguments | `:GoDB --config dev.yaml --port 8080` |
-| `:GoDBStdin <file> [args...]` | Debug with stdin from file | `:GoDBStdin input.txt --verbose` |
-| `:GoDBPrompt` | Prompt for arguments before debugging | `:GoDBPrompt` |
-| `:GoDebugFile` | Debug the current Go file | `:GoDebugFile` |
-| `:GoDebugAttach [PID]` | Attach to a running process | `:GoDebugAttach 12345` |
+| `:GoDebug <target> [args...]` | Debug a Go program with optional arguments | `:GoDebug . --config dev.yaml --port 8080` |
+| `:GoDebugStdin <input-file> <target> [args...]` | Debug with stdin from file | `:GoDebugStdin testdata/input.txt . --verbose` |
+| `:GoDebugAttach <pid>` | Attach to a running process | `:GoDebugAttach 12345` |
 
-**Notes:**
-- `:GoDB` - Specify arguments at launch time without editing `.vimspector.json`
-- `:GoDBStdin` - First argument is the input file, remaining args go to your program
-- `:GoDBPrompt` - Interactively prompts you for arguments before starting debugger
+**Target Options:**
+- `main.go` - Debug a specific file
+- `.` - Debug current directory (all .go files in the package)
+- `./cmd/cli` - Debug a specific directory/package
+- Any valid Go package path
+
+**Two Debugging Workflows:**
+
+1. **Ad-hoc debugging** (command-line style):
+   - Use `:GoDebug` or `:GoDebugStdin` commands
+   - Great for testing different arguments quickly
+   - No `.vimspector.json` file needed
+
+2. **Saved configurations** (using `.vimspector.json`):
+   - Use `<F5>` or `:call vimspector#Launch()`
+   - Define `program`, `args`, `input` in the JSON file
+   - Great for standard/repeated debug sessions
 
 ### Creating Configuration Files
 
@@ -299,27 +317,30 @@ Quick example - add to `.vimspector.json`:
 These are provided by this configuration (`lang/go.vim`):
 
 ```vim
-:GoDB [args...]                    " Debug main.go with arguments
-:GoDBStdin <file> [args...]        " Debug with stdin from file
-:GoDBPrompt                        " Prompt for arguments interactively
-:GoDebugFile                       " Debug current file
-:GoDebugAttach [PID]               " Attach to running process
+:GoDebug <target> [args...]                      " Debug with optional arguments
+:GoDebugStdin <input-file> <target> [args...]    " Debug with stdin from file
+:GoDebugAttach <pid>                             " Attach to running process
 ```
 
 **Examples:**
 ```vim
-" Simple debugging
-:GoDB
+" Debug specific file
+:GoDebug main.go
 
-" With arguments
-:GoDB --config dev.yaml --port 8080
+" Debug current directory (all .go files)
+:GoDebug .
 
-" With stdin redirection
-:GoDBStdin testdata/input.txt --verbose
+" Debug with arguments
+:GoDebug . --config dev.yaml --port 8080
 
-" Interactive prompt
-:GoDBPrompt
-" (You'll be asked: Debug arguments: )
+" Debug specific package with arguments
+:GoDebug ./cmd/cli --dryrun --game-id c5380903 tiles
+
+" Debug with stdin redirection
+:GoDebugStdin testdata/input.txt . --verbose
+
+" Debug with stdin and arguments
+:GoDebugStdin input.txt ./cmd/cli --config dev.yaml
 ```
 
 ## Example Workflows
@@ -358,31 +379,28 @@ vim main.go
 
 In Vim:
 ```vim
-" 1. Create vimspector config
-:VimspectorConfig
-
-" 2. Set a breakpoint on line 7 (the greeting := line)
+" 1. Set a breakpoint on line 7 (the greeting := line)
 :7
 <F9>
 
-" 3. Start debugging
-:GoDB
+" 2. Start debugging
+:GoDebug main.go
 
-" 4. You should see:
+" 3. You should see:
 "    - Vimspector windows open (variables, watches, stack)
 "    - Execution paused at your breakpoint
 "    - Current line highlighted
 
-" 5. Test stepping
+" 4. Test stepping
 <F10>    " Step over - should move to next line
 <F11>    " Step into - try on a function call
 <F12>    " Step out
 
-" 6. Inspect variables
+" 5. Inspect variables
 " Hover over 'name' variable and press <Leader>di
 " Should show the value "World"
 
-" 7. Stop debugging
+" 6. Stop debugging
 <F3>
 ```
 
@@ -397,7 +415,7 @@ In Vim:
 <F9>    " Toggle breakpoint
 
 " Start debugging with arguments
-:GoDB --config=dev --port=8080
+:GoDebug . --config=dev --port=8080
 
 " When stopped at breakpoint:
 <F11>   " Step into function
@@ -422,7 +440,7 @@ In Vim:
 
 For programs that read from stdin, you have several options:
 
-**Option 1: Using `:GoDBStdin` command (Easiest!)**
+**Option 1: Using `:GoDebugStdin` command (Easiest!)**
 
 Create `testdata/input.txt`:
 ```
@@ -433,14 +451,18 @@ line 3
 
 Then simply run:
 ```vim
-:GoDBStdin testdata/input.txt
+:GoDebugStdin testdata/input.txt main.go
+
+" Or debug current directory:
+:GoDebugStdin testdata/input.txt .
 
 " Or with additional arguments:
-:GoDBStdin testdata/input.txt --verbose --config dev.yaml
+:GoDebugStdin testdata/input.txt . --verbose --config dev.yaml
 ```
 
 This automatically:
 - Redirects stdin from the file
+- Debugs the specified target (file or directory)
 - Passes remaining arguments to your program
 - No need to edit `.vimspector.json`!
 
@@ -513,10 +535,10 @@ This opens an external terminal where you can manually use shell redirection.
 
 **Approach 1: Runtime arguments (Recommended for testing)**
 
-Use the `:GoDB` command to specify arguments each time you debug:
+Use the `:GoDebug` command to specify arguments each time you debug:
 
 ```vim
-:GoDB --config dev.yaml --verbose --port 8080
+:GoDebug . --config dev.yaml --verbose --port 8080
 ```
 
 This is perfect when:
@@ -535,7 +557,7 @@ Define arguments in `.vimspector.json` for consistent debugging:
       "adapter": "vscode-go",
       "configuration": {
         "request": "launch",
-        "program": "${workspaceRoot}/main.go",
+        "program": ".",
         "mode": "debug",
         "args": ["--config", "dev.yaml", "--verbose", "--port", "8080"]
       }
@@ -555,27 +577,14 @@ This is better when:
 - You want to save typing
 - You have multiple configurations (dev, prod, test)
 
-**Approach 3: Prompt for arguments**
+**Using `:VimspectorRestart`**
 
-You can also create a configuration that lets you enter args interactively. Unfortunately, vimspector doesn't support prompting directly, but you can use Vim's `input()` function with a custom command.
-
-Add to `~/.vim/lang/go.vim`:
+Once you start debugging with either approach, you can restart with the same configuration:
 ```vim
-command! GoDBPrompt call s:GoDBWithPrompt()
-
-function! s:GoDBWithPrompt()
-  let l:args_str = input('Debug arguments: ')
-  let l:args_list = split(l:args_str, ' ')
-  execute 'GoDB ' . l:args_str
-endfunction
+:VimspectorRestart
 ```
 
-Then use:
-```vim
-:GoDBPrompt
-" You'll be prompted: Debug arguments:
-" Type: --config dev.yaml --port 8080
-```
+This preserves your target and arguments from the initial launch!
 
 ## Troubleshooting
 
