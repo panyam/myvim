@@ -231,6 +231,12 @@ Edit `.vimspector.json` for advanced scenarios:
 
 ### Convenience Commands
 
+**Quick Mapping (debug mode only)**:
+
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<Enter>` | Step Over | Step over current line (most common action!) |
+
 **Quick Commands (always available)**:
 
 | Command | Action | Description |
@@ -243,12 +249,14 @@ Edit `.vimspector.json` for advanced scenarios:
 | Command | Action         | Description                                    |
 |---------|----------------|------------------------------------------------|
 | `:SI`   | Step Into      | Step into function call                        |
-| `:SN`   | Step Over      | Step over current line (Step Next)             |
+| `:SN`   | Step Over      | Step over current line (same as `<Enter>`)     |
 | `:SO`   | Step Out       | Step out of current function                   |
 | `:CO`   | Smart Continue | Continue if at paused line, else Run To Cursor |
 | `:DS`   | Stop           | Stop debugging                                 |
 
-**Smart Continue (`:CO`)**: The most useful command!
+**Pro Tip:** Just press `<Enter>` repeatedly to step through your code line by line!
+
+**Smart Continue (`:CO`)**:
 - If you're at the paused line: continues execution
 - If you move to a different line: runs to that line (like a temporary breakpoint)
 
