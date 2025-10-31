@@ -212,6 +212,8 @@ function! s:SetupDebugCommandsForBuffer()
 
     " Map Enter to Step Over (most common action)
     nnoremap <buffer> <silent> <CR> :call vimspector#StepOver()<CR>
+    " Map Shift+Enter to Step Into
+    nnoremap <buffer> <silent> <S-CR> :call vimspector#StepInto()<CR>
   endif
 endfunction
 
@@ -220,7 +222,7 @@ function! s:OnDebugStart()
   let g:vimspector_debug_active = 1
   " Set up commands for current buffer
   call s:SetupDebugCommandsForBuffer()
-  echo "Debug commands: <Enter>=StepOver :SI=StepInto :SN=StepOver :SO=StepOut :CO=Continue :DS=Stop | Always: :BR=Break :DR=Restart"
+  echo "Debug: <Enter>=StepOver <S-Enter>=StepInto | :SI :SN :SO :CO :DS | Always: :BR :DR"
 endfunction
 
 " Remove debug commands from a buffer
@@ -233,8 +235,9 @@ function! s:RemoveDebugCommandsFromBuffer()
     silent! delcommand CO
     silent! delcommand DS
 
-    " Remove Enter mapping
+    " Remove Enter mappings
     silent! nunmap <buffer> <CR>
+    silent! nunmap <buffer> <S-CR>
   endif
 endfunction
 

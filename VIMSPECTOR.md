@@ -231,11 +231,12 @@ Edit `.vimspector.json` for advanced scenarios:
 
 ### Convenience Commands
 
-**Quick Mapping (debug mode only)**:
+**Quick Mappings (debug mode only)**:
 
 | Key | Action | Description |
 |-----|--------|-------------|
 | `<Enter>` | Step Over | Step over current line (most common action!) |
+| `<Shift-Enter>` | Step Into | Step into function call |
 
 **Quick Commands (always available)**:
 
