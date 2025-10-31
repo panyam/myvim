@@ -186,44 +186,76 @@ function! s:SmartContinue()
   endtry
 endfunction
 
-" Set up debug mappings when debug session starts
-function! s:SetupDebugMappings()
-  " Only set mappings in code buffers, not debug windows
-  if &buftype == ''
-    " Comma mappings for quick actions
-    nnoremap <buffer> <silent> ,r :call vimspector#StepOut()<CR>
-    nnoremap <buffer> <silent> ,c :call <SID>SmartContinue()<CR>
-    nnoremap <buffer> <silent> ,n :call vimspector#StepOver()<CR>
+" Track debug session state
+let g:vimspector_debug_active = 0
 
+" Set up debug commands for a buffer
+function! s:SetupDebugCommandsForBuffer()
+  " Only set commands in code buffers, not debug windows
+  if &buftype == '' && g:vimspector_debug_active
     " Buffer-local convenience commands (only active during debug)
-    command! -buffer -nargs=0 SI call vimspector#StepInto()
-    command! -buffer -nargs=0 DC call vimspector#Stop() | call vimspector#Reset()
-
-    echo "Debug mappings enabled: ,r=StepOut ,c=Continue/RunToCursor ,n=StepOver | Commands: :SI :DC (always: :BR :DR)"
+    if !exists(':SI')
+      command! -buffer -nargs=0 SI call vimspector#StepInto()
+    endif
+    if !exists(':SN')
+      command! -buffer -nargs=0 SN call vimspector#StepOver()
+    endif
+    if !exists(':SO')
+      command! -buffer -nargs=0 SO call vimspector#StepOut()
+    endif
+    if !exists(':CO')
+      command! -buffer -nargs=0 CO call <SID>SmartContinue()
+    endif
+    if !exists(':DS')
+      command! -buffer -nargs=0 DS call vimspector#Stop() | call vimspector#Reset()
+    endif
   endif
 endfunction
 
-" Remove debug mappings when debug session ends
-function! s:RemoveDebugMappings()
-  if &buftype == ''
-    " Remove mappings
-    silent! nunmap <buffer> ,r
-    silent! nunmap <buffer> ,c
-    silent! nunmap <buffer> ,n
+" Set up debug commands when debug session starts
+function! s:OnDebugStart()
+  let g:vimspector_debug_active = 1
+  " Set up commands for current buffer
+  call s:SetupDebugCommandsForBuffer()
+  echo "Debug commands: :SI=StepInto :SN=StepOver :SO=StepOut :CO=Continue/RunToCursor :DS=Stop | Always: :BR=Break :DR=Restart"
+endfunction
 
+" Remove debug commands from a buffer
+function! s:RemoveDebugCommandsFromBuffer()
+  if &buftype == ''
     " Remove buffer-local commands
     silent! delcommand SI
-    silent! delcommand DC
+    silent! delcommand SN
+    silent! delcommand SO
+    silent! delcommand CO
+    silent! delcommand DS
   endif
 endfunction
 
-" Set up autocommands to enable/disable mappings automatically
+" Remove debug commands when debug session ends
+function! s:OnDebugEnd()
+  let g:vimspector_debug_active = 0
+
+  " Remove commands from all buffers
+  let l:current_buf = bufnr('%')
+  for l:buf in getbufinfo({'buflisted': 1})
+    if getbufvar(l:buf.bufnr, '&buftype') == ''
+      execute 'buffer ' . l:buf.bufnr
+      call s:RemoveDebugCommandsFromBuffer()
+    endif
+  endfor
+  execute 'buffer ' . l:current_buf
+endfunction
+
+" Set up autocommands to enable/disable commands automatically
 augroup VimspectorDebugMappings
   autocmd!
-  " When debug UI is created, set up mappings in code buffers
-  autocmd User VimspectorUICreated call s:SetupDebugMappings()
-  " When debug session ends, remove mappings
-  autocmd User VimspectorDebugEnded call s:RemoveDebugMappings()
+  " When debug UI is created, mark debug as active and set up commands
+  autocmd User VimspectorUICreated call s:OnDebugStart()
+  " When entering a buffer during debug, set up commands for that buffer
+  autocmd BufEnter * call s:SetupDebugCommandsForBuffer()
+  " When debug session ends, remove all commands
+  autocmd User VimspectorDebugEnded call s:OnDebugEnd()
 augroup END
 
 " ============================================================================

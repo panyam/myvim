@@ -229,26 +229,26 @@ Edit `.vimspector.json` for advanced scenarios:
 
 **Note:** `<Leader>` is typically `,` (comma) by default.
 
-### Convenience Shortcuts (Debug Mode Only)
+### Convenience Commands
 
-**Quick Mappings** (automatically enabled during debug sessions):
+**Quick Commands (always available)**:
 
-| Key | Action | Description |
-|-----|--------|-------------|
-| `,c` | Smart Continue | Continue if at paused line, otherwise Run To Cursor |
-| `,n` | Step Over | Step over current line |
-| `,r` | Step Out | Step out of current function (return) |
+| Command | Action | Description |
+|---------|--------|-------------|
+| `:BR` | Toggle Breakpoint | Add/remove breakpoint at current line |
+| `:DR` | Restart | Restart debug session with same args |
 
-**Quick Commands**:
+**Quick Commands (debug mode only)**:
 
-| Command | When Available | Action | Description |
-|---------|----------------|--------|-------------|
-| `:BR` | Always | Toggle Breakpoint | Add/remove breakpoint at current line |
-| `:DR` | Always | Restart | Restart debug session with same args |
-| `:SI` | Debug only | Step Into | Step into function call |
-| `:DC` | Debug only | Stop | Stop debugging |
+| Command | Action         | Description                                    |
+|---------|----------------|------------------------------------------------|
+| `:SI`   | Step Into      | Step into function call                        |
+| `:SN`   | Step Over      | Step over current line (Step Next)             |
+| `:SO`   | Step Out       | Step out of current function                   |
+| `:CO`   | Smart Continue | Continue if at paused line, else Run To Cursor |
+| `:DS`   | Stop           | Stop debugging                                 |
 
-**Smart Continue (`,c`)**: The most useful mapping!
+**Smart Continue (`:CO`)**: The most useful command!
 - If you're at the paused line: continues execution
 - If you move to a different line: runs to that line (like a temporary breakpoint)
 
