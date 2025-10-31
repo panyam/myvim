@@ -229,6 +229,24 @@ Edit `.vimspector.json` for advanced scenarios:
 
 **Note:** `<Leader>` is typically `,` (comma) by default.
 
+### Convenience Mappings (Debug Mode Only)
+
+These mappings are **automatically enabled when debugging starts** and disabled when debugging ends, so they don't interfere with normal editing:
+
+| Key | Action | Description |
+|-----|--------|-------------|
+| `,c` | Smart Continue | Continue if at paused line, otherwise Run To Cursor |
+| `,si` | Step Into | Step into function call |
+| `,n` | Step Over | Step over current line |
+| `,r` | Step Out | Step out of current function (return) |
+| `,b` | Toggle Breakpoint | Add/remove breakpoint at current line |
+| `,dr` | Restart | Restart debug session with same args |
+| `,dc` | Stop | Stop debugging |
+
+**Smart Continue (`,c`)**: The most useful mapping!
+- If you're at the paused line: continues execution
+- If you move to a different line: runs to that line (like a temporary breakpoint)
+
 ### Custom Key Mappings
 
 You can customize these in `~/.vim/core/vimspector.vim`. Example:

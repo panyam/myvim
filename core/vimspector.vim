@@ -159,6 +159,70 @@ augroup VimspectorUICustomization
 augroup END
 
 " ============================================================================
+" Debug Mode Convenience Mappings (only active during debug sessions)
+" ============================================================================
+
+" Smart continue function: Continue if at paused line, RunToCursor otherwise
+function! s:SmartContinue()
+  " Get current line
+  let l:current_line = line('.')
+
+  " Try to get the current PC (program counter) line from vimspector
+  " If we're at the same line as PC, do Continue; otherwise RunToCursor
+  try
+    let l:pc_line = vimspector#GetPCLine()
+    if l:pc_line == l:current_line
+      call vimspector#Continue()
+    else
+      call vimspector#RunToCursor()
+    endif
+  catch
+    " If we can't get PC line, just do RunToCursor
+    call vimspector#RunToCursor()
+  endtry
+endfunction
+
+" Set up debug mappings when debug session starts
+function! s:SetupDebugMappings()
+  " Only set mappings in code buffers, not debug windows
+  if &buftype == ''
+    nnoremap <buffer> <silent> ,r :call vimspector#StepOut()<CR>
+    nnoremap <buffer> <silent> ,c :call <SID>SmartContinue()<CR>
+    nnoremap <buffer> <silent> ,si :call vimspector#StepInto()<CR>
+    nnoremap <buffer> <silent> ,b :call vimspector#ToggleBreakpoint()<CR>
+    nnoremap <buffer> <silent> ,dc :call vimspector#Stop()<CR>
+    nnoremap <buffer> <silent> ,dr :call vimspector#Restart()<CR>
+
+    " Also add step over for convenience
+    nnoremap <buffer> <silent> ,n :call vimspector#StepOver()<CR>
+
+    echo "Debug mappings enabled: ,r=StepOut ,c=Continue/RunToCursor ,si=StepInto ,n=StepOver ,b=ToggleBreak ,dc=Stop ,dr=Restart"
+  endif
+endfunction
+
+" Remove debug mappings when debug session ends
+function! s:RemoveDebugMappings()
+  if &buftype == ''
+    silent! nunmap <buffer> ,r
+    silent! nunmap <buffer> ,c
+    silent! nunmap <buffer> ,si
+    silent! nunmap <buffer> ,b
+    silent! nunmap <buffer> ,dc
+    silent! nunmap <buffer> ,dr
+    silent! nunmap <buffer> ,n
+  endif
+endfunction
+
+" Set up autocommands to enable/disable mappings automatically
+augroup VimspectorDebugMappings
+  autocmd!
+  " When debug UI is created, set up mappings in code buffers
+  autocmd User VimspectorUICreated call s:SetupDebugMappings()
+  " When debug session ends, remove mappings
+  autocmd User VimspectorDebugEnded call s:RemoveDebugMappings()
+augroup END
+
+" ============================================================================
 " Vimspector Helper Functions
 " ============================================================================
 
