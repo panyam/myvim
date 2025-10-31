@@ -68,9 +68,9 @@ highlight VimspectorCurrentLine ctermbg=DarkBlue ctermfg=White guibg=#005f87 gui
 "     "configurations": { ... }
 "   }
 "
-" Default: Use vimspector's built-in layout
-let g:vimspector_ui_config = {}
-" To customize globally, uncomment and modify the dictionary above
+" UI Layout Configuration
+" No global UI config - each project defines its own in .vimspector.json
+" See documentation below for how to configure the "ui" section
 
 " ============================================================================
 " Vimspector Key Mappings
@@ -95,6 +95,9 @@ nmap <F12> <Plug>VimspectorStepOut
 " Variable inspection
 nmap <Leader>di <Plug>VimspectorBalloonEval
 xmap <Leader>di <Plug>VimspectorBalloonEval
+
+" Breakpoints window
+nmap <Leader>db <Plug>VimspectorBreakpoints
 
 " ============================================================================
 " Vimspector Helper Commands (Command-Mode Interface)
@@ -123,6 +126,7 @@ command! BreakDel call vimspector#ToggleBreakpoint()
 command! BreakCond call vimspector#ToggleAdvancedBreakpoint()
 command! BreakFunc call vimspector#AddFunctionBreakpoint()
 command! BreakClearAll call vimspector#ClearBreakpoints()
+command! BreakList call vimspector#ListBreakpoints()
 
 " Stepping commands
 command! StepOver call vimspector#StepOver()
@@ -131,8 +135,28 @@ command! StepOut call vimspector#StepOut()
 command! RunToCursor call vimspector#RunToCursor()
 
 " Short convenience commands (available anytime)
-command! -nargs=0 BR call vimspector#ToggleBreakpoint()
+command! -nargs=? BR call s:ToggleBreakpointAtLine(<f-args>)
+command! -nargs=0 BL call vimspector#ListBreakpoints()
 command! -nargs=0 DR call vimspector#Restart()
+
+" Helper function for BR command
+function! s:ToggleBreakpointAtLine(...)
+  if a:0 == 0
+    " No line number provided, use current line
+    call vimspector#ToggleBreakpoint()
+  else
+    " Line number provided, toggle breakpoint at that line
+    let l:target_line = str2nr(a:1)
+    " Save current position
+    let l:save_pos = getpos('.')
+    " Move to target line
+    call cursor(l:target_line, 1)
+    " Toggle breakpoint at that line
+    call vimspector#ToggleBreakpoint()
+    " Restore cursor position
+    call setpos('.', l:save_pos)
+  endif
+endfunction
 
 " Legacy command for backwards compatibility
 command! VimspectorReset call vimspector#Reset()
@@ -186,6 +210,25 @@ function! s:SmartContinue()
   endtry
 endfunction
 
+" Smart continue with optional line number
+function! s:SmartContinueToLine(...)
+  if a:0 == 0
+    " No line number provided, use smart continue
+    call s:SmartContinue()
+  else
+    " Line number provided, move to that line and run to cursor
+    let l:target_line = str2nr(a:1)
+    " Save current position
+    let l:save_pos = getpos('.')
+    " Move to target line
+    call cursor(l:target_line, 1)
+    " Run to cursor at that line
+    call vimspector#RunToCursor()
+    " Restore cursor position (it will move when execution pauses)
+    call setpos('.', l:save_pos)
+  endif
+endfunction
+
 " Track debug session state
 let g:vimspector_debug_active = 0
 
@@ -204,7 +247,7 @@ function! s:SetupDebugCommandsForBuffer()
       command! -buffer -nargs=0 SO call vimspector#StepOut()
     endif
     if !exists(':CO')
-      command! -buffer -nargs=0 CO call <SID>SmartContinue()
+      command! -buffer -nargs=? CO call <SID>SmartContinueToLine(<f-args>)
     endif
     if !exists(':DS')
       command! -buffer -nargs=0 DS call vimspector#Stop() | call vimspector#Reset()

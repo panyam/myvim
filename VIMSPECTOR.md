@@ -242,8 +242,14 @@ Edit `.vimspector.json` for advanced scenarios:
 
 | Command | Action | Description |
 |---------|--------|-------------|
-| `:BR` | Toggle Breakpoint | Add/remove breakpoint at current line |
+| `:BR [line]` | Toggle Breakpoint | Add/remove breakpoint at current line or specified line |
 | `:DR` | Restart | Restart debug session with same args |
+
+**Examples:**
+```vim
+:BR          " Toggle breakpoint at current line
+:BR 42       " Toggle breakpoint at line 42
+```
 
 **Quick Commands (debug mode only)**:
 
@@ -252,8 +258,14 @@ Edit `.vimspector.json` for advanced scenarios:
 | `:SI`   | Step Into      | Step into function call                        |
 | `:SN`   | Step Over      | Step over current line (same as `<Enter>`)     |
 | `:SO`   | Step Out       | Step out of current function                   |
-| `:CO`   | Smart Continue | Continue if at paused line, else Run To Cursor |
+| `:CO [line]` | Smart Continue | Continue, run to cursor, or run to specified line |
 | `:DS`   | Stop           | Stop debugging                                 |
+
+**Examples:**
+```vim
+:CO          " Smart continue (continue if at pause line, else run to cursor)
+:CO 100      " Run until line 100
+```
 
 **Pro Tip:** Just press `<Enter>` repeatedly to step through your code line by line!
 
@@ -314,24 +326,47 @@ nnoremap <Leader>ds :call vimspector#Stop()<CR>
 
 ### UI Layout Configuration
 
-See [CUSTOMIZATION.md](CUSTOMIZATION.md) for detailed UI customization options.
+Each project can customize the debug UI layout by adding a `"ui"` section to `.vimspector.json`.
 
-Quick example - add to `.vimspector.json`:
+**Available panels:**
+- `Variables` - Local and global variables
+- `Watches` - Watch expressions
+- `Stack` - Call stack
+- `Breakpoints` - List of all breakpoints (toggle with `:BL` or `,db`)
+- `Output` - Debug adapter output
+- `Console` - Interactive debug console
+- `Disassembly` - Assembly view
+
+**Position options:** `"left"`, `"right"`, `"top"`, `"bottom"`
+**Size options:** `"width"` (for left/right), `"height"` (for top/bottom)
+
+**Example `.vimspector.json` with UI customization:**
 
 ```json
 {
   "ui": {
-    "Variables": { "pos": "right", "width": 60 },
-    "Watches": { "pos": "right", "width": 60 },
-    "Stack": { "pos": "right", "width": 60 },
-    "Output": { "pos": "bottom", "height": 10 },
-    "Console": { "pos": "bottom", "height": 10 }
+    "Variables": { "pos": "right", "width": 70 },
+    "Watches": { "pos": "right", "width": 70 },
+    "Stack": { "pos": "right", "width": 70 },
+    "Breakpoints": { "pos": "right", "width": 70 },
+    "Output": { "pos": "bottom", "height": 12 },
+    "Console": { "pos": "bottom", "height": 12 }
   },
   "configurations": {
-    ...
+    "Launch": {
+      "adapter": "vscode-go",
+      "configuration": {
+        "request": "launch",
+        "program": "${fileDirname}",
+        "mode": "debug",
+        "args": ["--config", "dev.yaml"]
+      }
+    }
   }
 }
 ```
+
+**Pro Tip:** Use `:BL` or `,db` to toggle the Breakpoints panel at any time during debugging.
 
 ## Debugging Commands
 
