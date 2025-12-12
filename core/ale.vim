@@ -10,7 +10,8 @@ let g:ale_linters = {
 \   'typescriptreact': ['tsserver', 'eslint'],
 \   'python': ['pylint'],
 \   'vue': ['eslint'],
-\   'go': ['gopls']
+\   'go': ['gopls'],
+\   'tex': ['chktex', 'lacheck']
 \}
 
 " Fixers configuration

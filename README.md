@@ -62,12 +62,14 @@ mv ~/.vimrc ~/.vimrc.backup.$(date +%Y%m%d) 2>/dev/null || true
 │   ├── go.vim
 │   ├── javascript.vim
 │   ├── python.vim
-│   └── rust.vim
+│   ├── rust.vim
+│   └── tex.vim
 ├── ftplugin/                # Auto-loaded by filetype
 │   ├── go.vim
 │   ├── javascript.vim
 │   ├── python.vim
-│   └── rust.vim
+│   ├── rust.vim
+│   └── tex.vim
 └── sessions/                # Vim session files (optional)
 ```
 
@@ -102,6 +104,10 @@ This configuration includes several powerful plugins. See detailed guides for ea
 - **[ALE.md](ALE.md)** - Asynchronous linting and code fixing
 - **[PLUGINS.md](PLUGINS.md)** - Complete plugin list with tips and tricks
 - **[CUSTOMIZATION.md](CUSTOMIZATION.md)** - UI customization and layout options
+
+## Language Guides
+
+- **[LaTeX Setup Guide](lang/LATEX_GUIDE.md)** - Prerequisites and usage for LaTeX/TeX editing with VimTeX
 
 ## Language Profiles
 
@@ -323,5 +329,5 @@ MESSAGES
 
 ---
 
-**Last Updated:** 2025-10-25
-**Configuration Version:** 1.0
+**Last Updated:** 2025-12-03
+**Configuration Version:** 1.1

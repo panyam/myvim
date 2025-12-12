@@ -61,6 +61,9 @@ endif
 " Rust support
 Plug 'rust-lang/rust.vim'
 
+" LaTeX support
+Plug 'lervag/vimtex'
+
 " Code completion
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
 
